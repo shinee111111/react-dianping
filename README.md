@@ -1,8 +1,9 @@
 
 # Respect And Honor
 
-公钥删除
+公钥删除 
 无用户拉资源再次上传
+仓库的权限问题 private
 
 ## 第一次尝试写markdown文档
 
