@@ -128,6 +128,7 @@ const discounts = (state = initialState.discounts, action) => {
         ids: state.ids.concat(action.response.ids)
       };
     case types.FETCH_DISCOUNTS_FAILURE:
+        return { ...state, isFetching: false };     
     default:
       return state;
   }

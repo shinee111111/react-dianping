@@ -11,8 +11,9 @@ export default store => next => action => {
     return next(action);
   }
 
+  // 进入异步action环节
   const { endpoint, schema, types } = callAPI;
-  if (typeof endpoint !=='string') {
+  if (typeof endpoint !== 'string') {
     throw new Error('endpoint必须为字符串类型的URL');
   }
   // 需要获取schema进行扁平化处理
@@ -26,7 +27,28 @@ export default store => next => action => {
     throw new Error('action type必须为字符串类型');
   }
 
-  // 把经过处理之后的action返回
+  /**
+   * 中间件action
+   * @param {object} data
+   * {
+   *   type: 'FETCH_DATA_SUCCESS',
+   *   response: {
+   *     ids: [],
+   *     [schema.name]: {}
+   *   }
+   * } 
+   * 外界action
+   * {
+   *   [FETCH_DATA]: {},
+   *   text
+   * }
+   * 处理后的action
+   * {
+   *   type: 'FETCH_DATA_SUCCESS',
+   *   response: {...},
+   *   text  // 作为扁平化键名的参数。
+   * }
+   */
   const actionWith = data => {
     const finalAction = { ...action, ...data };
     delete finalAction[FETCH_DATA];
@@ -35,7 +57,7 @@ export default store => next => action => {
 
   const [requestType, successType, failureType] = types;
 
-  next(actionWith({type: requestType}));
+  next(actionWith({ type: requestType }));
 
   return fetchData(endpoint, schema).then(
     response => next(actionWith({
@@ -59,7 +81,7 @@ const fetchData = (endpoint, schema) => {
 
 
 const normalizeData = (data, schema) => {
-  const {id, name} = schema;
+  const { id, name } = schema;
   let kvObj = {};
   let ids = [];
   if (Array.isArray(data)) {

@@ -34,4 +34,4 @@ export default reducer;
 // ui层和状态管理层通信，实现解耦
 export const getError = (state) => {
   return state.app.error
-}
+};
