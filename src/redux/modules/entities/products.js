@@ -20,6 +20,9 @@ export const getProductDetail = (state, id) => {
   return product && product.detail && product.purchaseNotes ? product : null;
 };
 
-export const getProductById = (state, id) => {
-  return state.entities.products[id];
-};
+// export const getProductById = (state, id) => {
+//   return state.entities.products[id];
+// };
+
+export const getAllProducts = (state) =>
+  state.entities.products;

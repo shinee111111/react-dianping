@@ -3,6 +3,8 @@ import url from '../../utils/url';
 import { FETCH_DATA } from '../middleware/api';
 import { schema } from './entities/products';
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
+import { getAllProducts } from './entities/products';
 
 // 请求参数使用到的常量对象
 export const params = {
@@ -140,19 +142,20 @@ export default combineReducers({
 });
 
 // selectors
+
 // 获取猜你喜欢state
-export const getLikes = state => {
-  return state.home.likes.ids.map(id => {
-    return state.entities.products[id];
-  });
-};
+const getAllLikesIds = state => state.home.likes.ids;
+export const getLikes = createSelector(
+  [getAllLikesIds, getAllProducts],
+  (likesIds, products) => likesIds.map(id => products[id])
+)
 
 // 获取特惠商品state
-export const getDiscounts = state => {
-  return state.home.discounts.ids.map(id => {
-    return state.entities.products[id];
-  });
-};
+const getAllDiscountsIds = state => state.home.discounts.ids;
+export const getDiscounts = createSelector(
+  [getAllDiscountsIds, getAllProducts],
+  (discountsIds, products) => discountsIds.map(id => products[id])
+)
 
 // 猜你喜欢当前分页码
 export const getPageCountOfLikes = state => {

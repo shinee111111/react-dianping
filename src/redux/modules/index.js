@@ -7,6 +7,7 @@ import home from './home';
 import search from './search';
 import login from './login';
 import user from './user';
+import purchase from './purchase';
 
 // 合并成根reducer
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   home,
   search,
   login,
-  user
+  user,
+  purchase
 });
 
 export default rootReducer;

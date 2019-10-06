@@ -3,6 +3,8 @@ import './style.css';
 
 class PurchaseForm extends Component {
   render() {
+    const { phone, quantity, totalPrice } = this.props;
+    // const totalPrice = (currentPrice * quantity).toFixed(1);
     return (
       <div className='purchaseForm'>
         <div className='purchaseForm__wrapper'>
@@ -12,9 +14,11 @@ class PurchaseForm extends Component {
               <span className='purchaseForm__counter--dec'
                 onClick={this.handleDecrease}
               >-</span>
-              <input className='purchaseForm__quantity'
+              <input
+                className='purchaseForm__quantity'
+                type='number'
                 onChange={this.handleChange}
-                value={0}
+                value={quantity}
               />
               <span className='purchaseForm__counter--inc'
                 onClick={this.handleIncrease}
@@ -24,12 +28,12 @@ class PurchaseForm extends Component {
           <div className='purchaseForm__row'>
             <div className='purchaseForm__rowLabel'>小计</div>
             <div className='purchaseForm__rowValue'>
-              <span className='purchaseForm__totalPrice'>¥120.0</span>
+              <span className='purchaseForm__totalPrice'>¥{totalPrice}</span>
             </div>
           </div>
           <div className='purchaseForm__row'>
             <div className='purchaseForm__rowLabel'>手机号码</div>
-            <div className='purchaseForm__rowValue'>15306630706</div>
+            <div className='purchaseForm__rowValue'>{phone}</div>
           </div>
         </div>
         <ul className='purchaseForm__remark'>
@@ -50,19 +54,29 @@ class PurchaseForm extends Component {
   }
 
   handleDecrease = () => {
-
+    const { quantity } = this.props;
+    if (quantity <= 0) {
+      return;
+    }
+    this.props.onSetQuantity(quantity - 1);
   }
 
   handleIncrease = () => {
-
+    const { quantity } = this.props;
+    this.props.onSetQuantity(quantity + 1);
   }
 
-  handleChange = () => {
-
+  handleChange = (e) => {
+    const quantity = parseInt(e.target.value);
+    this.props.onSetQuantity(quantity);
   }
 
   handleClick = () => {
-
+    const { quantity } = this.props;
+    if (quantity <= 0) {
+      return;
+    }
+    this.props.onSubmit();
   }
 
 }

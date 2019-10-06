@@ -1,9 +1,19 @@
 import { combineReducers } from 'redux';
 import url from '../../utils/url';
 import { FETCH_DATA } from '../middleware/api.js';
-import { schema as shopSchema, getShopById } from './entities/shops';
-import { schema as productSchema, 
-  getProductDetail, getProductById } from './entities/products';
+import {
+  schema as shopSchema,
+  // getRelatedShop,
+  getAllShops
+} from './entities/shops';
+import {
+  schema as productSchema,
+  getProductDetail,
+  // getProductById,
+  getAllProducts
+
+} from './entities/products';
+import { createSelector } from 'reselect';
 
 export const types = {
   // 获取产品详情
@@ -129,12 +139,22 @@ export const getProduct = (state, id) => {
 };
 
 // 获取管理的店铺信息
-export const getRelatedShop = (state, productId) => {
-  // 当productId存在的时候，才有意义去获取店铺的信息
-  const product = getProductById(state, productId);
-  let shopId = product ? product.nearestShop : null;
-  if (shopId) {
-    return getShopById(state, shopId);
+// export const getRelatedShop = (state, productId) => {
+//   // 当productId存在的时候，才有意义去获取店铺的信息
+//   const product = getProductById(state, productId);
+//   let shopId = product ? product.nearestShop : null;
+//   if (shopId) {
+//     return getShopById(state, shopId);
+//   }
+//   return null;
+// };
+
+export const getShopById = createSelector(
+  [getAllProducts, getAllShops, (state, productId) => productId],
+  (products, shops, productId) => {
+    const product = products[productId];
+    return product && product.nearestShop
+      ? shops[productId]
+      : null;
   }
-  return null;
-}
+);

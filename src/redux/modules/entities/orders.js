@@ -14,8 +14,12 @@ export const types = {
   // 删除订单
   DELETE_ORDER: 'ORDERS/DELETE_ORDER',
   // 新增评价
-  ADD_COMMENT: 'ORDERS/ADD_COMMENT'
+  ADD_COMMENT: 'ORDERS/ADD_COMMENT',
+  // 新增订单
+  ADD_ORDER: 'ORDERS/ADD_ORDER'
 }
+
+let orderIdCounter = 15;
 
 export const actions = {
   // 删除订单
@@ -28,6 +32,15 @@ export const actions = {
     type: types.ADD_COMMENT,
     orderId,
     commentId
+  }),
+  // 新增订单
+  addOrder: (order) => ({
+    type: types.ADD_ORDER,
+    orderId: `o-${++orderIdCounter}`,
+    order: {
+      ...order,
+      id: `o-${orderIdCounter}`
+    }
   })
 }
 
@@ -42,6 +55,11 @@ const reducer = (state = {}, action) => {
         commentId: action.commentId
       }
     }
+  } else if (action.type === types.ADD_ORDER) {
+    return Object.assign(
+      { [action.orderId]: action.order },
+      state
+    );
   } else if (action.type === types.DELETE_ORDER) {
     const { [action.orderId]: deleteOrder, ...restOrders } = state;
     // 已返回删除指定order的orders
@@ -56,3 +74,5 @@ export default reducer;
 // selectors
 export const getOrderById = (state, id) =>
   state.entities.orders[id];
+
+export const getAllOrders = (state) => state.entities.orders;

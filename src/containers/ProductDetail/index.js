@@ -9,7 +9,7 @@ import BuyButton from './components/BuyButton';
 import Header from '../../components/Header';
 import {
   actions as detailActions,
-  getProduct, getRelatedShop
+  getProduct, getShopById
 } from '../../redux/modules/detail';
 
 class ProductDetail extends Component {
@@ -59,7 +59,7 @@ const mapStateToProps = (state, props) => {
   const productId = props.match.params.id;
   return {
     product: getProduct(state, productId),
-    relatedShop: getRelatedShop(state, productId)
+    relatedShop: getShopById(state, productId)
   };
 };
 

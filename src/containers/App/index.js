@@ -4,21 +4,32 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
 import ErrorToast from '../../components/ErrorToast';
 import { actions as appActions, getError } from '../../redux/modules/app';
-import Home from '../Home';
-import ProductDetail from '../ProductDetail';
-import Search from '../Search';
-import SearchResult from '../SearchResult';
-import Login from '../Login';
-import PrivateRoute from '../PrivateRoute';
-import User from '../User';
-import Purchase from '../Purchase';
+import AsyncComponent from '../../utils/AsyncComponent';
+
+// import PrivateRoute from '../PrivateRoute';
+// import Home from '../Home';
+// import ProductDetail from '../ProductDetail';
+// import Search from '../Search';
+// import SearchResult from '../SearchResult';
+// import Login from '../Login';
+// import User from '../User';
+// import Purchase from '../Purchase';
+
+const PrivateRoute = AsyncComponent(() => import('../PrivateRoute')); 
+const Home = AsyncComponent(() => import('../Home')); 
+const ProductDetail = AsyncComponent(() => import('../ProductDetail')); 
+const Search = AsyncComponent(() => import('../Search')); 
+const SearchResult = AsyncComponent(() => import('../SearchResult')); 
+const Login = AsyncComponent(() => import('../Login')); 
+const User = AsyncComponent(() => import('../User')); 
+const Purchase = AsyncComponent(() => import('../Purchase')); 
 
 class App extends Component {
   render() {
     const { error, appActions: { clearError } } = this.props;
     return (
       <div className="App">
-        <Router>
+        <Router basename="/dianping">
           <Switch>
             <Route path='/login' component={Login} />
             <PrivateRoute path='/user' component={User} />

@@ -5,14 +5,15 @@ import {
   AVAILABLE_TYPE,
   REFUND_TYPE,
   schema,
-  getOrderById,
-  // types as orderTypes,
+  // getOrderById,
+  getAllOrders,
   actions as orderActions
 } from './entities/orders';
 import {
   actions as commentActions
 } from './entities/comments';
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect'
 
 const initialState = {
   orders: {
@@ -39,6 +40,8 @@ export const types = {
   FETCH_ORDERS_FAILURE: 'USER/FETCH_ORDERS_FAILURE',
   // 设置当前选中的tabl
   SET_CURRENT_TAB: 'USER/SET_CURRENT_TAB',
+  // 新增订单
+  ADD_ORDER: 'USER/ADD_ORDER',
   // 删除订单
   DELETE_ORDER_REQUEST: "USER/DELETE_ORDER_REQUEST",
   DELETE_ORDER_SUCCESS: "USER/DELETE_ORDER_SUCCESS",
@@ -75,6 +78,11 @@ export const actions = {
   setCurrentTab: (index) => ({
     type: types.SET_CURRENT_TAB,
     index
+  }),
+  // 新增未消费订单(type = 3)
+  addOrder: (orderId) => ({
+    type: types.ADD_ORDER,
+    orderId
   }),
   // 删除订单
   removeOrder: () => {
@@ -204,6 +212,12 @@ const orders = (state = initialState.orders, action) => {
     case types.FETCH_ORDERS_FAILURE:
       return { ...state, isFetching: false };
     // case orderTypes.DELETE_ORDER:
+    case types.ADD_ORDER:
+      return { 
+        ...state,  
+        ids: state.ids.concat(action.orderId),
+        toPayIds: state.toPayIds.concat(action.orderId)
+      };
     case types.DELETE_ORDER_SUCCESS:
       return {
         ...state,
@@ -211,7 +225,7 @@ const orders = (state = initialState.orders, action) => {
         toPayIds: removeOrderId(state, 'toPayIds', action.orderId),
         availableIds: removeOrderId(state, 'availableIds', action.orderId),
         refundIds: removeOrderId(state, 'refundIds', action.orderId),
-      }
+      };
     default:
       return state;
   }
@@ -270,17 +284,27 @@ export default combineReducers({
 export const getCurrentTab = state =>
   state.user.currentTab;
 
-export const getOrders = state => {
-  const key = [
-    'ids',
-    'toPayIds',
-    'availableIds',
-    'refundIds'
-  ][state.user.currentTab];
-  return state.user.orders[key].map(
-    id => getOrderById(state, id)
-  )
-};
+const getUserOrders = state => state.user.orders;
+
+// export const getOrders = state => {
+//   const key = [
+//     'ids',
+//     'toPayIds',
+//     'availableIds',
+//     'refundIds'
+//   ][state.user.currentTab];
+//   return state.user.orders[key].map(
+//     id => getOrjderById(state, id)
+//   )
+// };
+
+export const getOrders = createSelector(
+  [getCurrentTab, getUserOrders, getAllOrders],
+  (tabIndex, userOrders, orders) => {
+    const key = ['ids', 'toPayIds', 'availableIds', 'refundIds'][tabIndex];
+    return userOrders[key].map(id => orders[id]);
+  } 
+);
 
 // 获取正在删除的订单的id
 export const getDeletingOrderId = state => {
